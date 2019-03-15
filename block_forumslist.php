@@ -1,39 +1,40 @@
 <?php
 
-
-// for own plugin logic
 require_once($CFG->dirroot.'/blocks/forumslist/locallib.php');
 
-// this extend the block base class from moodle core
+// we extend the block class of moodle
 class block_forumslist extends block_base {
-
-    // ********************************************************************************
-    // overwriting moodles own block methods taken from blocks/moodleblockclass.php
-    // ********************************************************************************
 
     // there has to be always an init function for a block
     public function init() {
-        //
+        // the init function sets the block title
         $this->title = "Forumslist";
     }
-    // The PHP tag and the curly bracket for the class definition
-    // will only be closed after there is another function added in the next section.
+
     public function get_content() {
+
+        // the content of the block is taken from the cache if possible
         if ($this->content !== null) {
             return $this->content;
         }
 
-
+        // now we get the data
         $forums = get_forums_list();
 
-        // Render discussions.
+        // the renderable to render the data is initialized with the data
         $renderable = new \block_forumslist\output\forums_list($forums);
+
+        // the page has a renderer for every component on it
         $renderer = $this->page->get_renderer('block_forumslist');
 
+        // now we build the content if it hasn't been returned from the cach
         $this->content = new stdClass;
+        // there is a footer
         $this->content->footer = '';
+        // and the content is build by the renderer receiving the renderable
         $this->content->text = $renderer->render($renderable);
 
+        // the content is then returned
         return $this->content;
 
     }
